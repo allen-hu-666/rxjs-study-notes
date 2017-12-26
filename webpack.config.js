@@ -1,6 +1,7 @@
 const webpack = require("webpack");
 const path = require("path");
 const HtmlWebpackPlugin = require("html-webpack-plugin");
+const CopyWebpackPlugin = require("copy-webpack-plugin");
 const DashboardPlugin = require("webpack-dashboard/plugin");
 const nodeEnv = process.env.NODE_ENV || "development";
 const isProd = nodeEnv === "production";
@@ -17,7 +18,7 @@ var config = {
     filename: "[name].bundle.js",
     sourceMapFilename: "[name].bundle.map",
     devtoolModuleFilenameTemplate: function (info) {
-        return "file:///" + info.absoluteResourcePath;
+      return "file:///" + info.absoluteResourcePath;
     }
   },
   module: {
@@ -39,11 +40,25 @@ var config = {
         }
       },
       { test: /\.html$/, loader: "html-loader" },
-      { test: /\.css$/, loaders: ["style-loader", "css-loader"] }
+      { test: /\.ejs$/, loader: "ejs-loader" },
+      { test: /\.css$/, loaders: ["style-loader", "css-loader"] },
+      { test: /\.scss$/, loaders: ["style-loader", "css-loader", "sass-loader"] },
+      {
+        test: /\.(png|gif|jpg|svg|jpeg)$/i,
+        use: {
+          loader: 'file-loader',
+          query: {
+            name: 'assets/[hash].[ext]'
+          }
+        }
+      }
     ]
   },
   resolve: {
     extensions: [".ts", ".js"]
+  },
+  externals: {
+        'rxjs': 'window.Rx'
   },
   plugins: [
     new webpack.DefinePlugin({
@@ -53,9 +68,13 @@ var config = {
       }
     }),
     new HtmlWebpackPlugin({
-      title: "Typescript Webpack Starter",
-      template: "!!ejs-loader!src/index.html"
+      title: "rxjs study notes",
+      template: "!!ejs-loader!src/index.ejs"
     }),
+    new CopyWebpackPlugin([{
+      from: __dirname + '/src/assets',
+      to: 'assets'
+    }]),
     new webpack.optimize.CommonsChunkPlugin({
       name: "vendor",
       minChunks: Infinity,
@@ -66,7 +85,7 @@ var config = {
       output: { comments: false },
       sourceMap: true
     }),
-    new DashboardPlugin(),
+    //new DashboardPlugin(),
     new webpack.LoaderOptionsPlugin({
       options: {
         tslint: {

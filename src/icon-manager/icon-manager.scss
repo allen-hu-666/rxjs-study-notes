@@ -1,0 +1,41 @@
+#icon-manager {
+    color: red;
+    width: 400px;
+    height: 700px;
+}
+#icon-manager-content {
+    background-image: url("./iphone-bg.png");
+    background-repeat: no-repeat;
+    background-size:100% 100%;
+    width: 374px;
+    height: 650px;
+    padding: 115px 31px 120px 31px;
+    #icon-trash {
+        height: 15px;
+    }
+    .icon-content {
+        position: absolute;
+        transition: transform 1s;
+        -moz-transition: transform 1s;	/* Firefox 4 */
+        -webkit-transition: transform 1s;	/* Safari 和 Chrome */
+        -o-transition: transform 1s;
+        .icon-shadow {
+            width: 70px;
+            height: 70px;
+            margin: 11.75px;
+            border-radius:15px;
+            background-color: #CCCCCC;
+        }
+        img {
+            position: absolute;
+            width: 80px;
+            height: 80px;
+            left: 6.75px;
+            top: 6.75px;
+            transition: transform 0.1s;
+            -moz-transition: transform 0.1s;	/* Firefox 4 */
+            -webkit-transition: transform 0.1s;	/* Safari 和 Chrome */
+            -o-transition: transform 0.1s;
+        }
+    }
+}
