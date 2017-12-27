@@ -1,5 +1,5 @@
 /** 
- * @name delay掩饰发射
+ * @name delay延时发射
  * public delay(delay: number | Date, scheduler: Scheduler): Observable
  */
 //delay();
@@ -19,7 +19,7 @@ function delay2() {
 }
 
 /** 
- * @name delayWhen掩饰发射
+ * @name delayWhen延时发射
  * public delayWhen(delayDurationSelector: function(value: T): Observable, subscriptionDelay: Observable): Observable
  */
 //delayWhen();

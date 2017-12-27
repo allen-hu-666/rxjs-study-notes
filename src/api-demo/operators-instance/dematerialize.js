@@ -1,5 +1,5 @@
 /** 
- * @name dematerialize掩饰发射
+ * @name dematerialize延时发射
  * public dematerialize(): Observable
  */
 //dematerialize();

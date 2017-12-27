@@ -26,16 +26,32 @@
             border-radius:15px;
             background-color: #CCCCCC;
         }
-        img {
+        .img-content {
             position: absolute;
-            width: 80px;
-            height: 80px;
             left: 6.75px;
             top: 6.75px;
             transition: transform 0.1s;
             -moz-transition: transform 0.1s;	/* Firefox 4 */
             -webkit-transition: transform 0.1s;	/* Safari 和 Chrome */
             -o-transition: transform 0.1s;
+        }
+        img {
+            width: 80px;
+            height: 80px;
+            transition: transform 0.1s;
+            -moz-transition: transform 0.1s;	/* Firefox 4 */
+            -webkit-transition: transform 0.1s;	/* Safari 和 Chrome */
+            -o-transition: transform 0.1s;
+        }
+    }
+    .icon-active {
+        z-index: 99;
+        img {
+            transform: scale(1.2);
+            -ms-transform: scale(1.2); 	/* IE 9 */
+            -moz-transform: scale(1.2); 	/* Firefox */
+            -webkit-transform: scale(1.2); /* Safari 和 Chrome */
+            -o-transform: scale(1.2);
         }
     }
 }
