@@ -1,5 +1,5 @@
 // @ts-check
-let prefix = function () {
+export let prefix = function () {
     var div = document.createElement('div');
     var cssText = '-webkit-transition:all .1s; -moz-transition:all .1s; -o-transition:all .1s; -ms-transition:all .1s; transition:all .1s;';
     div.style.cssText = cssText;
@@ -43,6 +43,8 @@ export class IconClass {
                 this.setActive();
             }
         })*/
+        this.imgX = 0;
+        this.imgY = 0;
     }
     setActive() {
         this.active = true;
@@ -65,8 +67,18 @@ export class IconClass {
         return this;
     }
     changeImg(x,y) {
+        this.imgX += x;
+        this.imgY += y;
         this._imgEl.style[prefix] = "translate(" + x + "px," + y + "px)";
         return this;
+    }
+    getOffset() {
+        let imgRect = this._imgEl.getBoundingClientRect();
+        let contentRect = this._iconContent.getBoundingClientRect();
+        return {
+            y:imgRect.top - contentRect.top,
+            x:imgRect.left - contentRect.left
+        }
     }
     remove() {
         this._contentEl.removeChild(this._iconContent);

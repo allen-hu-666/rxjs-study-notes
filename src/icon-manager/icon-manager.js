@@ -17,43 +17,44 @@ const iconImgSrcs = [
 ];
 let icons = [];
 let contentEl = document.getElementById("icon-manager-content");
-let $end = Observable.fromEvent(document, "touchend",{ passive: false });
-let $move = Observable.fromEvent(document, "touchmove",{ passive: false })
+let $end = Observable.fromEvent(document, "touchend", { passive: false });
+let $move = Observable.fromEvent(document, "touchmove", { passive: false })
     .do(e => {
         e.preventDefault();
         e.stopPropagation();
     })
-    .map(e => {
+    /*.map(e => {
         return {
             startX: 0,
             startY: 0,
             x: e.changedTouches[0].clientX,
             y: e.changedTouches[0].clientY
         }
-    }).takeUntil($end);
+    })*/
+    .takeUntil($end);
 for (let i = 0, l = iconImgSrcs.length; i < l; i++) {
     icons.push(new IconClass(contentEl, iconImgSrcs[i]));
     icons[i].position(i);
-    let $start = Observable.fromEvent(icons[i]._imgEl, "touchstart",{ passive: false })
-        .map(e => {
+    let start$ = Observable.fromEvent(icons[i]._imgEl, "touchstart", { passive: false })
+    .map(e=>{
+        let offset = icons[i].getOffset();
+        //console.log(offset);
+        return {
+            x: e.changedTouches[0].clientX- offset.x,
+            y: e.changedTouches[0].clientY- offset.y,
+        }
+    });
+    start$.mapTo($move)
+        .concatAll()
+        .withLatestFrom(start$, (move, start) => {
+            //console.log(start.target.style.);
             return {
-                startX: e.changedTouches[0].clientX,
-                startY: e.changedTouches[0].clientY,
-                changeX:0,
-                changeY:0
+                x: move.changedTouches[0].clientX - start.x,
+                y: move.changedTouches[0].clientY - start.y
             }
-        });
-    $start.switchMap(res => {
-        //let eve{}
-        //console.log(res);
-        return $move.scan((acc, one) => {
-            //console.log(acc);
-            acc.changeX = one.x - acc.startX;
-            acc.changeY = one.y - acc.startY;
-            return acc
-        }, res )
-    }).subscribe(res => {
-        //console.log(res);
-        icons[i].changeImg(res.changeX,res.changeY)
-    })
+        })
+        .subscribe(res => {
+            //console.log(res);
+            icons[i].changeImg(res.x, res.y)
+        })
 }
