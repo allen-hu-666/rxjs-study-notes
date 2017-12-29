@@ -13,10 +13,11 @@ function throttle() {
  * @name throttleTime
  * public throttleTime(duration: number, scheduler: Scheduler): Observable<T>
  */
-// throttleTime();
+//throttleTime();
 function throttleTime() {
     //Emit clicks at a rate of at most one click per second
     var clicks = Rx.Observable.fromEvent(document, 'click');
     var result = clicks.throttleTime(1000);
+    console.log(result);
     result.subscribe(x => console.log(x));
 }
