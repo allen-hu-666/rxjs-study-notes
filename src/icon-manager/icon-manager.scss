@@ -1,5 +1,5 @@
 #icon-manager {
-    color: red;
+    //color: red;
     width: 400px;
     height: 700px;
 }
@@ -9,17 +9,39 @@
     background-size:100% 100%;
     width: 374px;
     height: 650px;
-    padding: 115px 31px 120px 31px;
-    #icon-trash {
-        height: 15px;
+    padding: 110px 30px 120px 30px;
+    #icon-trash-content {
+        height: 20px;
+        div{
+            text-align: center;
+            color: red;
+            background: -webkit-linear-gradient(#ccc, #fff);
+            background: -o-linear-gradient(#ccc, #fff);
+            background: -moz-linear-gradient(#ccc, #fff);
+            background: linear-gradient(#ccc, #fff);
+            display: none;
+        }
+    }
+    .trash-display {
+        div{
+            display: block !important;
+        }
+    }
+    .trash-action {
+        div{
+            color: #fff !important;
+            background: -webkit-linear-gradient(red, #fff) !important;
+            background: -o-linear-gradient(red, #fff) !important;
+            background: -moz-linear-gradient(red, #fff) !important;
+            background: linear-gradient(red, #fff) !important;
+        }
     }
     .icon-content {
         position: absolute;
-        transition: transform 1s;
-        -moz-transition: transform 1s;	/* Firefox 4 */
-        -webkit-transition: transform 1s;	/* Safari 和 Chrome */
-        -o-transition: transform 1s;
+        width: 93.5px;
+        height: 93.5px;
         .icon-shadow {
+            display: none;
             width: 70px;
             height: 70px;
             margin: 11.75px;
@@ -30,22 +52,33 @@
             position: absolute;
             left: 6.75px;
             top: 6.75px;
-            transition: transform 0.1s;
-            -moz-transition: transform 0.1s;	/* Firefox 4 */
-            -webkit-transition: transform 0.1s;	/* Safari 和 Chrome */
-            -o-transition: transform 0.1s;
         }
         img {
             width: 80px;
             height: 80px;
+        }
+        .img-content, img {
             transition: transform 0.1s;
-            -moz-transition: transform 0.1s;	/* Firefox 4 */
-            -webkit-transition: transform 0.1s;	/* Safari 和 Chrome */
+            -moz-transition: transform 0.1s;
+            -webkit-transition: transform 0.1s;
             -o-transition: transform 0.1s;
         }
     }
+    .icon-unactive {
+        transition: transform 0.1s;
+        -moz-transition: transform 0.1s;
+        -webkit-transition: transform 0.1s;
+        -o-transition: transform 0.1s;
+    }
     .icon-active {
         z-index: 99;
+        .icon-shadow {
+            display: block;
+            transition: transform 0.5s;
+            -moz-transition: transform 0.5s;
+            -webkit-transition: transform 0.5s;
+            -o-transition: transform 0.5s;
+        }
         img {
             transform: scale(1.2);
             -ms-transform: scale(1.2); 	/* IE 9 */

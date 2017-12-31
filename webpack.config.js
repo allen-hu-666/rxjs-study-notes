@@ -14,7 +14,7 @@ var config = {
     vendor: "./vendor.ts"
   },
   output: {
-    path: path.resolve("./dist"),
+    path: path.resolve("./doc"),
     filename: "[name].bundle.js",
     sourceMapFilename: "[name].bundle.map",
     devtoolModuleFilenameTemplate: function (info) {

@@ -19,17 +19,20 @@ export let prefix = function () {
     return 'transform';
 }();
 
+const trashRectBottom = document.getElementById("icon-trash-content").getBoundingClientRect().bottom;
+
 export class IconClass {
     constructor(contentEl, iconImgSrc) {
-        this.index = 0;
+        this.indexX = 0;
+        this.indexY = 0;
         this._contentEl = contentEl;
         this.active = false;
 
         this._iconContent = document.createElement("div");
-        this._iconContent.className = 'icon-content';
+        this._iconContent.className = 'icon-content icon-unactive';
 
-        let shadowEl = document.createElement("div");
-        shadowEl.className = 'icon-shadow';
+        this._shadowEl = document.createElement("div");
+        this._shadowEl.className = 'icon-shadow';
 
         this._imgContent = document.createElement("div");
         this._imgContent.className = 'img-content';
@@ -38,56 +41,80 @@ export class IconClass {
         imgEl.src = iconImgSrc;
 
         this._imgContent.appendChild(imgEl);
-        this._iconContent.appendChild(shadowEl);
+        this._iconContent.appendChild(this._shadowEl);
         this._iconContent.appendChild(this._imgContent);
         this._contentEl.appendChild(this._iconContent);
     }
     setActive() {
         this.active = true;
         this._iconContent.classList.add('icon-active');
+        this._iconContent.classList.remove('icon-unactive');
         return this;
-    }
-    unActive() {
-        this.active = false;
-        this._iconContent.classList.remove('icon-active');
-        return this;
-    }
-    complate() {
-
     }
     position(index = 0) {
-        this.index = index;
-        const x = index % 4 * 93.5;
-        const y = Math.floor(index / 4) * 93.5;
-        this.updateEl(x, y)
+        this.indexX = index % 4;
+        this.indexY = Math.floor(index / 4);
+        this._moveIconContent(this.indexX, this.indexY);
         return this;
     }
-    updateEl(x, y) {
+    crush(indexX, indexY) {
+        if (indexX === this.indexX && indexY === this.indexY) {
+            if (this.indexX < 3) {
+                this.indexX++;
+            } else {
+                this.indexX = 0;
+                this.indexY++;
+            }
+            this._moveIconContent(this.indexX, this.indexY);
+            return {
+                indexX: this.indexX,
+                indexY: this.indexY
+            }
+        } else {
+            return false;
+        }
+    }
+    moveToNext() {
+        if (this.indexX < 3) {
+            this.indexX++;
+        } else {
+            this.indexX = 0;
+            this.indexY++;
+        }
+        this._moveIconContent(this.indexX, this.indexY);
+    }
+    _moveIconContent(indexX, indexY) {
+        const x = indexX * 93.5;
+        const y = indexY * 93.5;
         this._iconContent.style[prefix] = "translate(" + x + "px," + y + "px)";
-        return this;
     }
     moveIcon(x, y) {
         this._imgContent.style[prefix] = "translate(" + x + "px," + y + "px)";
         return this;
     }
-    getIndex(x, y) {
-        // let xIndex = (x%93.5>)
-        return this.index;
+    ifInCrash() {
+        return this._imgContent.getBoundingClientRect().top < trashRectBottom;
     }
-    getOffset() {
-        let imgRect = this._imgContent.getBoundingClientRect();
-        let contentRect = this._iconContent.getBoundingClientRect();
-        return {
-            y: imgRect.top - contentRect.top,
-            x: imgRect.left - contentRect.left
-        }
+    moveShadow(indexX, indexY) {
+        this._shadowEl.style[prefix] = "translate(" + indexX * 93.5 + "px," + indexY * 93.5 + "px)";
     }
-    reset() {
+    _getIndexChange(pxChange) {
+        const indexChange = Math.floor(pxChange / 93.5);
+        if (indexChange === 0 || (pxChange % 93.5) > 80) return false;
+        return indexChange;
+    }
+    complate(indexXChange, indexYChange) {
+        this.active = false;
+        this._iconContent.classList.remove('icon-active');
+        this._iconContent.classList.add('icon-unactive');
+        this.indexX += indexXChange;
+        this.indexY += indexYChange;
+        this._moveIconContent(this.indexX, this.indexY);
+        this._shadowEl.style[prefix] = "translate(0px,0px)";
         this._imgContent.style[prefix] = "translate(0px,0px)";
     }
     remove() {
         this._contentEl.removeChild(this._iconContent);
-        return this;
     }
 }
 IconClass.ICON_MARGIN = 6.75;
