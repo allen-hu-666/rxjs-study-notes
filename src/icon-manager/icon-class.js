@@ -39,6 +39,7 @@ export class IconClass {
 
         let imgEl = document.createElement("img");
         imgEl.src = iconImgSrc;
+        //imgEl.ontouchstart = "return false";
 
         this._imgContent.appendChild(imgEl);
         this._iconContent.appendChild(this._shadowEl);
@@ -95,6 +96,9 @@ export class IconClass {
     ifInCrash() {
         return this._imgContent.getBoundingClientRect().top < trashRectBottom;
     }
+    getIconBoundingClientRect() {
+        return this._imgContent.getBoundingClientRect()
+    }
     moveShadow(indexX, indexY) {
         this._shadowEl.style[prefix] = "translate(" + indexX * 93.5 + "px," + indexY * 93.5 + "px)";
     }
@@ -104,14 +108,16 @@ export class IconClass {
         return indexChange;
     }
     complate(indexXChange, indexYChange) {
-        this.active = false;
-        this._iconContent.classList.remove('icon-active');
-        this._iconContent.classList.add('icon-unactive');
         this.indexX += indexXChange;
         this.indexY += indexYChange;
         this._moveIconContent(this.indexX, this.indexY);
         this._shadowEl.style[prefix] = "translate(0px,0px)";
         this._imgContent.style[prefix] = "translate(0px,0px)";
+        this.active = false;
+        this._iconContent.classList.remove('icon-active');
+        setTimeout(()=>{
+            this._iconContent.classList.add('icon-unactive');
+        },100)
     }
     remove() {
         this._contentEl.removeChild(this._iconContent);

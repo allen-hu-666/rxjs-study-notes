@@ -1,6 +1,11 @@
+html,body {
+    margin: 0;
+    padding: 0;
+    width: 434px;
+}
 #icon-manager {
     //color: red;
-    width: 400px;
+    //width: 434px;
     height: 700px;
 }
 #icon-manager-content {
@@ -56,8 +61,7 @@
         img {
             width: 80px;
             height: 80px;
-        }
-        .img-content, img {
+            pointer-events: none;
             transition: transform 0.1s;
             -moz-transition: transform 0.1s;
             -webkit-transition: transform 0.1s;

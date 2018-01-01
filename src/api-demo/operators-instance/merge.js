@@ -89,7 +89,7 @@ function mergeMapTo() {
  * public mergeScan(accumulator: function(acc: R, value: T): Observable<R>, seed: *, concurrent: number): Observable<R>
  * http://reactivex.io/rxjs/class/es6/Observable.js~Observable.html#instance-method-mergeScan
  */
-//mergeScan();
+// mergeScan();
 function mergeScan() {
     // Count the number of click events
     const click$ = Rx.Observable.fromEvent(document, 'click');

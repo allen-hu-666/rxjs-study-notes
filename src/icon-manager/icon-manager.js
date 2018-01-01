@@ -37,13 +37,30 @@ for (let i = 0, l = iconImgSrcs.length; i < l; i++) {
         .do(e => {
             icon.setActive();
             trashEl.classList.add('trash-display');
+        })
+        .map(e => {
+            const iconRect = icon.getIconBoundingClientRect();
+            return {
+                maxX: 404 - iconRect.right,
+                minX: 30 - iconRect.left,
+                maxY: 760 - iconRect.bottom,
+                minY: 100 - iconRect.top,
+                clientX: e.changedTouches[0].clientX,
+                clientY: e.changedTouches[0].clientY,
+            }
         });
     const iconMove$ = longTap$.mapTo(move$.takeUntil(end$))
         .concatAll()
         .withLatestFrom(longTap$, (move, start) => {
+            let xChange = move.changedTouches[0].clientX - start.clientX;
+            let yChange = move.changedTouches[0].clientY - start.clientY;
+            xChange = xChange < start.minX ? start.minX : xChange;
+            xChange = xChange > start.maxX ? start.maxX : xChange;
+            yChange = yChange < start.minY ? start.minY : yChange;
+            yChange = yChange > start.maxY ? start.maxY : yChange;
             return {
-                x: move.changedTouches[0].clientX - start.changedTouches[0].clientX,
-                y: move.changedTouches[0].clientY - start.changedTouches[0].clientY
+                x: xChange,
+                y: yChange
             }
         });
     const indexChange$ = iconMove$
@@ -74,14 +91,41 @@ for (let i = 0, l = iconImgSrcs.length; i < l; i++) {
             indexChangeX: 0,
             indexChangeY: 0
         }));
-    const moveSubscription = longTap$.switchMapTo(end$.take(1))
-        .withLatestFrom(indexChange$, (longTap, indexChange) => {
-            return indexChange
+    indexChange$
+        .merge(end$)
+        .scan((acc, one) => {
+            if (one.type !== 'touchend')
+                return one;
+            if (!!acc.moveEnd) {
+                return {
+                    moveEnd: true,
+                    indexChangeX: 0,
+                    indexChangeY: 0
+                }
+            } else {
+                acc.moveEnd = true;
+                return acc;
+            }
+        }, {
+            indexChangeX: 0,
+            indexChangeY: 0
         })
+        .filter(res => res.moveEnd)
         .subscribe(res => {
             icon.complate(res.indexChangeX, res.indexChangeY);
             trashEl.classList.remove('trash-display');
         });
+    /*const moveSubscription = longTap$.switchMapTo(end$.take(1))
+        .withLatestFrom(indexChange$, (longTap, indexChange) => {
+            console.log(indexChange);
+            return indexChange
+        })
+        .subscribe(res => {
+            console.log(res);
+            icon.complate(res.indexChangeX, res.indexChangeY);
+            trashEl.classList.remove('trash-display');
+            console.log(icon);
+        });*/
     const inTrash$ = iconMove$
         .map(res => icon.ifInCrash())
         .distinctUntilChanged()
@@ -132,3 +176,8 @@ function crushOtherIcon(indexX, indexY) {
     }
     relationIcons.forEach(icon => icon.moveToNext());
 }
+
+document.oncontextmenu = function (e) {
+    return e.returnValue = false
+};
+
