@@ -19,11 +19,10 @@ let icons = [];
 const contentEl = document.getElementById("icon-manager-content");
 const trashEl = document.getElementById("icon-trash-content");
 const end$ = Observable.fromEvent(document, "touchend", { passive: false });
-const move$ = Observable.fromEvent(document, "touchmove", { passive: false })
-    .do(e => {
-        e.preventDefault();
-        e.stopPropagation();
-    });
+const move$ = Observable.fromEvent(document, "touchmove", { passive: false }).do(e => {
+    e.preventDefault();
+    e.stopPropagation();
+});
 for (let i = 0, l = iconImgSrcs.length; i < l; i++) {
     const icon = new IconClass(contentEl, iconImgSrcs[i]);
     icons.push(icon);
@@ -91,7 +90,7 @@ for (let i = 0, l = iconImgSrcs.length; i < l; i++) {
             indexChangeX: 0,
             indexChangeY: 0
         }));
-    indexChange$
+    const moveSubscription = indexChange$
         .merge(end$)
         .scan((acc, one) => {
             if (one.type !== 'touchend')
@@ -115,17 +114,6 @@ for (let i = 0, l = iconImgSrcs.length; i < l; i++) {
             icon.complate(res.indexChangeX, res.indexChangeY);
             trashEl.classList.remove('trash-display');
         });
-    /*const moveSubscription = longTap$.switchMapTo(end$.take(1))
-        .withLatestFrom(indexChange$, (longTap, indexChange) => {
-            console.log(indexChange);
-            return indexChange
-        })
-        .subscribe(res => {
-            console.log(res);
-            icon.complate(res.indexChangeX, res.indexChangeY);
-            trashEl.classList.remove('trash-display');
-            console.log(icon);
-        });*/
     const inTrash$ = iconMove$
         .map(res => icon.ifInCrash())
         .distinctUntilChanged()
