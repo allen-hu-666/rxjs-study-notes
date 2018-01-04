@@ -104,7 +104,7 @@ function test3() {
 }
 
 /**
- * @name BehaviorSubject 记录所有发送过的值
+ * @name BehaviorSubject 记录上个发射的值
  */
 //test4();
 function test4() {

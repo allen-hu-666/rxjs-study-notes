@@ -1,6 +1,10 @@
 import Rx from 'rxjs';
 /**
  * @name 什么是调度者？调度者控制着何时启动一个订阅和何时通知被发送。它有三个组件构成
+ * queue 队列
+    asap 尽快
+    async 异步
+    animationFrame 帧动画
  */
 /**
  * @name 异步发送消息，.observeOn(Rx.Scheduler.async)
