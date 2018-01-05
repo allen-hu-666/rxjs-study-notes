@@ -16,17 +16,25 @@ const iconImgSrcs = [
     './assets/GMail.png',
 ];
 let icons = [];
-const contentEl = document.getElementById("icon-manager-content");
+
 const trashEl = document.getElementById("icon-trash-content");
+
+/* 转化touchend为可观察对象 */
 const end$ = Observable.fromEvent(document, "touchend", { passive: false });
+/* 转化touchmove为可观察对象 */
 const move$ = Observable.fromEvent(document, "touchmove", { passive: false }).do(e => {
     e.preventDefault();
     e.stopPropagation();
 });
+
 for (let i = 0, l = iconImgSrcs.length; i < l; i++) {
-    const icon = new IconClass(contentEl, iconImgSrcs[i]);
+    /* 创建icon对象 */
+    const icon = new IconClass(iconImgSrcs[i]);
     icons.push(icon);
-    icon.position(i);
+
+    icon.position(i); // 初始化icon的位置
+
+    /* 转化icon各自的touchmove为可观察对象 */
     const start$ = Observable.fromEvent(icon._imgContent, "touchstart", { passive: false });
 
     const longTap$ = start$

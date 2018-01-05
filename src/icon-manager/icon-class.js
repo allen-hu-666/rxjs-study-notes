@@ -1,4 +1,6 @@
 // @ts-check
+
+/* 获取Transition前缀 */
 export let prefix = function () {
     var div = document.createElement('div');
     var cssText = '-webkit-transition:all .1s; -moz-transition:all .1s; -o-transition:all .1s; -ms-transition:all .1s; transition:all .1s;';
@@ -19,10 +21,17 @@ export let prefix = function () {
     return 'transform';
 }();
 
+/* 获取回收站的位置 */
 const trashRectBottom = document.getElementById("icon-trash-content").getBoundingClientRect().bottom;
 
+const contentEl = document.getElementById("icon-manager-content");
+
 export class IconClass {
-    constructor(contentEl, iconImgSrc) {
+    /** 
+     * @constructor
+     * @param {string} iconImgSrc icon图片的url地址
+     */
+    constructor(iconImgSrc) {
         this.indexX = 0;
         this.indexY = 0;
         this._contentEl = contentEl;
@@ -39,25 +48,38 @@ export class IconClass {
 
         let imgEl = document.createElement("img");
         imgEl.src = iconImgSrc;
-        //imgEl.ontouchstart = "return false";
 
         this._imgContent.appendChild(imgEl);
         this._iconContent.appendChild(this._shadowEl);
         this._iconContent.appendChild(this._imgContent);
         this._contentEl.appendChild(this._iconContent);
     }
+    /** 
+     * @public 激活icon的移动状态
+     * @return {IconClass}
+     */
     setActive() {
         this.active = true;
         this._iconContent.classList.add('icon-active');
         this._iconContent.classList.remove('icon-unactive');
         return this;
     }
+    /** 
+     * @public 根据icon的初始index定位icon
+     * @param {number} index 初始index
+     * @return {IconClass}
+     */
     position(index = 0) {
         this.indexX = index % 4;
         this.indexY = Math.floor(index / 4);
         this._moveIconContent(this.indexX, this.indexY);
         return this;
     }
+    /** 
+     * @public 根据icon的初始index定位icon
+     * @param {number} indexX 初始index
+     * @param {number} indexY 初始index
+     */
     crush(indexX, indexY) {
         if (indexX === this.indexX && indexY === this.indexY) {
             if (this.indexX < 3) {
@@ -115,9 +137,9 @@ export class IconClass {
         this._imgContent.style[prefix] = "translate(0px,0px)";
         this.active = false;
         this._iconContent.classList.remove('icon-active');
-        setTimeout(()=>{
+        setTimeout(() => {
             this._iconContent.classList.add('icon-unactive');
-        },100)
+        }, 100)
     }
     remove() {
         this._contentEl.removeChild(this._iconContent);
