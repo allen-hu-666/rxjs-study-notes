@@ -15,9 +15,13 @@ const iconImgSrcs = [
     './assets/Music.png',
     './assets/GMail.png',
 ];
+
 let icons = [];
 
 const trashEl = document.getElementById("icon-trash-content");
+
+/*获取回收箱底部的位置*/
+const trashRectBottom = trashEl.getBoundingClientRect().bottom;
 
 /* 转化touchend为可观察对象 */
 const end$ = Observable.fromEvent(document, "touchend", { passive: false });
@@ -34,9 +38,9 @@ for (let i = 0, l = iconImgSrcs.length; i < l; i++) {
 
     icon.position(i); // 初始化icon的位置
 
-    /* 转化icon各自的touchmove为可观察对象 */
+    /* 转化icon各自的touchstart为可观察对象 */
     const start$ = Observable.fromEvent(icon._imgContent, "touchstart", { passive: false });
-
+    /*封装成长按1秒事件*/
     const longTap$ = start$
         .merge(move$, end$, 2)
         .debounceTime(1000)
@@ -56,6 +60,7 @@ for (let i = 0, l = iconImgSrcs.length; i < l; i++) {
                 clientY: e.changedTouches[0].clientY,
             }
         });
+    /*封装成icon移动事件*/
     const iconMove$ = longTap$.mapTo(move$.takeUntil(end$))
         .concatAll()
         .withLatestFrom(longTap$, (move, start) => {
@@ -70,6 +75,7 @@ for (let i = 0, l = iconImgSrcs.length; i < l; i++) {
                 y: yChange
             }
         });
+    /*封装成icon的网格坐标改变事件*/
     const indexChange$ = iconMove$
         .do(res => icon.moveIcon(res.x, res.y))
         .filter(res => {
@@ -98,6 +104,7 @@ for (let i = 0, l = iconImgSrcs.length; i < l; i++) {
             indexChangeX: 0,
             indexChangeY: 0
         }));
+    /*封装成移动完成事件，并订阅*/
     const moveSubscription = indexChange$
         .merge(end$)
         .scan((acc, one) => {
@@ -122,8 +129,9 @@ for (let i = 0, l = iconImgSrcs.length; i < l; i++) {
             icon.complate(res.indexChangeX, res.indexChangeY);
             trashEl.classList.remove('trash-display');
         });
+    /*封装成进出回收箱事件*/
     const inTrash$ = iconMove$
-        .map(res => icon.ifInCrash())
+        .map(res => icon.getIconBoundingClientRect().top < trashRectBottom)
         .distinctUntilChanged()
         .merge(Observable.of(false))
         .do(ifInCrash => {
@@ -133,6 +141,7 @@ for (let i = 0, l = iconImgSrcs.length; i < l; i++) {
                 trashEl.classList.remove('trash-action');
             }
         });
+    /*封装成icon丢进回收箱事件，并订阅*/
     const trashSubscription = end$
         .withLatestFrom(inTrash$, (end, ifInCrash) => {
             return ifInCrash
@@ -148,6 +157,7 @@ for (let i = 0, l = iconImgSrcs.length; i < l; i++) {
         })
 }
 
+/* 当icon移动到某个位置的时候，找出该位置的icon以及后面的icon，移动它们到下一格 */
 function crushOtherIcon(indexX, indexY) {
     let relationIcons = [];
     findRelationIcon(indexX, indexY);
@@ -173,7 +183,7 @@ function crushOtherIcon(indexX, indexY) {
     relationIcons.forEach(icon => icon.moveToNext());
 }
 
+/*禁止右键菜单*/
 document.oncontextmenu = function (e) {
     return e.returnValue = false
 };
-
