@@ -13,7 +13,7 @@ rxjs的学习笔记，主要包含了rxjs的各种api demo和一个rxjs写的安
 * 源码在src/ionc-manager
 * 着重看icon-manager里面的代码
 * icon-class是对ionc所有dom操作的封装，因为如果在rxjs操作符里直接操作dom会比较繁琐
-* 大家可以到[https://elon-hu.github.io/billliard-element/](https://elon-hu.github.io/billliard-element/) 观看效果
+* 大家可以到[https://elon-hu.github.io/rxjs-study-notes/](https://elon-hu.github.io/rxjs-study-notes/) 观看效果
 * 目前只支持移动端，但可以用chrome的F12开发模式下的phone模式体验
 
 ### rxjs api demo
